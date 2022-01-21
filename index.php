@@ -3,7 +3,8 @@ header('Content-Type: application/json; charset=utf-8');
 require_once 'connexion.inc.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
-	// Route : http://localhost/php/01_Demo/13_apiRestPHP/
+	// Route : http://localhost/php/01_Demo/13_apiRestPHP/apiRestEtPDO/
+	
 
 	 // Préparation de la requete
 	 $querrySql="SELECT * FROM personne";
@@ -18,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
 }
 else if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
-	// Route : http://localhost/php/01_Demo/13_apiRestPHP/
+	// Route : http://localhost/php/01_Demo/13_apiRestPHP/apiRestEtPDO/
 
 	$body = file_get_contents('php://input');
 	$objet = json_decode($body);
@@ -28,7 +29,7 @@ else if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$tab["prenom"] = $objet->prenom;
 	//$tab["id"] =56; -> plus besoin l'id est en auto incrementation
 	$tab["info"] ="Ajouter";
-	echo json_encode($tab);
+	//echo json_encode($tab);
 
 	// preparation requete
 	$prepared_sql="INSERT INTO personne VALUES(null,:nom,:prenom)";
@@ -38,26 +39,30 @@ else if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$prepared_query->bindParam(":prenom",$tab["prenom"],PDO::PARAM_STR);
 	// excecute requete
 	$prepared_query->execute();
+
+	$tab["id"] = $pdo->lastInsertId();
+
+	echo json_encode($tab);
 }
 else if ($_SERVER["REQUEST_METHOD"] == "DELETE")
 {
-		// Route : http://localhost/php/01_Demo/13_apiRestPHP/personne/[id]
-		//var_dump($_SERVER['REDIRECT_URL']);
-		$tab["info"] = "delete";
-		$tab["id"] = $_GET["id"];
-		echo json_encode($tab);
+	// Route : http://localhost/php/01_Demo/13_apiRestPHP/apiRestEtPDO/personne/[id]
+	//var_dump($_SERVER['REDIRECT_URL']);
+	$tab["info"] = "delete";
+	$tab["id"] = $_GET["id"];
+	echo json_encode($tab);
 
-		// préparation requete
-		$prepared_sql="DELETE FROM personne WHERE id=:id";
-		$prepared_query = $pdo->prepare($prepared_sql);
-		$prepared_query->bindValue(':id', $tab["id"],PDO::PARAM_INT);
-		// execution requete
-		$prepared_query->execute();
+	// préparation requete
+	$prepared_sql="DELETE FROM personne WHERE id=:id";
+	$prepared_query = $pdo->prepare($prepared_sql);
+	$prepared_query->bindValue(':id', $tab["id"],PDO::PARAM_INT);
+	// execution requete
+	$prepared_query->execute();
 	
 }
 else if ($_SERVER["REQUEST_METHOD"] == "PUT")
 {
-	http://localhost/php/01_Demo/13_apiRestPHP/personne/[id]
+	// Route : http://localhost/php/01_Demo/13_apiRestPHP/apiRestEtPDO/personne/[id]
 	$body = file_get_contents('php://input');
 	$objet = json_decode($body);
 	// $objet->nom;
